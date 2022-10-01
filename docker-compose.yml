@@ -1,0 +1,66 @@
+version: '3.5'
+
+# Must have BuildKit enabled
+# COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
+
+networks:
+  internet:
+  intranet:
+    internal: true
+
+services:
+
+  vpn:
+    image: protonvpn-docker
+    restart: always
+    environment:
+      # Credentials
+      PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
+      PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
+      # Override these where applicable
+      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-NL}
+      PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
+    networks:
+      - internet
+      - intranet
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    # Expose pyload container's port here!
+    # expose:
+    #  - 8000
+    build:
+      context: protonvpn-docker
+      dockerfile: Dockerfile
+  
+  firewall:
+    env_file:
+      - firewall.env
+    restart: always
+    network_mode: service:vpn
+    image: docker-firewall
+    build:
+      context: docker-firewall
+      dockerfile: Dockerfile
+      
+  socks:
+    env_file:
+      - socks.env
+    depends_on:
+      - vpn
+      - firewall
+    restart: always
+    network_mode: service:firewall
+    image: socks-over-https
+    build:
+      context: socks-over-https
+      dockerfile: Dockerfile
+  
+  app:
+    depends_on:
+      - socks
+    restart: always
+    network_mode: service:socks
+    image: ubuntu:latest
+    
