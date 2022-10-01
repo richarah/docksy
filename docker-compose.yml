@@ -1,4 +1,4 @@
-version: '3.5'
+version: "3"
 
 # Must have BuildKit enabled
 # COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
@@ -14,15 +14,14 @@ services:
     image: protonvpn-docker
     restart: always
     environment:
+      env_file:
+      - vpn.env
       # Credentials
       PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
       PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
       # Override these where applicable
       PROTONVPN_SERVER: ${PROTONVPN_SERVER:-RANDOM}
       PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
-    env_file:
-      - vpn.env
-      - common.env
     networks:
       - internet
       - intranet
@@ -40,7 +39,6 @@ services:
   firewall:
     env_file:
       - firewall.env
-      - common.env
     depends_on:
       - vpn
     restart: always
@@ -66,10 +64,9 @@ services:
       dockerfile: Dockerfile
       
   socks:
-    env_file:
-      - socks.env
-      - common.env
     environment:
+      env_file:
+      - socks.env
       USER: ${PROXY_USER}
       PASS: ${PROXY_PASS}
       HTTPS_IP: ${PROXY_IP}
@@ -85,7 +82,7 @@ services:
   
   app:
     env_file:
-      - common.env
+      - app.env
     depends_on:
       - socks
     restart: always
