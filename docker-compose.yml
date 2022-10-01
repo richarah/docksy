@@ -18,13 +18,16 @@ services:
       PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
       PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
       # Override these where applicable
-      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-NL}
+      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-RANDOM}
       PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
+    env_file:
+      - vpn.env
+      - common.env
     networks:
       - internet
       - intranet
     cap_add:
-      - NET_ADMIN
+      - net_admin
     devices:
       - /dev/net/tun:/dev/net/tun
     # Expose pyload container's port here!
@@ -37,7 +40,25 @@ services:
   firewall:
     env_file:
       - firewall.env
+      - common.env
+    depends_on:
+      - vpn
     restart: always
+    # This capibility is needed to add firewall rules.
+    cap_add:
+      - net_admin
+    # Some environment variables to configure the firewall. See the Dockerfile
+    # for more about these options.
+    environment:
+      ALLOW_IP_ADDRESS: $PROXY_IP
+      ALLOW_PORT: $PROXY_PORT
+      ALLOW_PROTO: tcp
+
+      # This is the port which a tcp socket will be opened on once the firewall
+      # is ready. Containers which require the firewall to be available before
+      # doing something should wait until this port is open. See below for an
+      # example of how to wait.
+      FIREWALL_READY_SIGNAL_PORT: 60000
     network_mode: service:vpn
     image: docker-firewall
     build:
@@ -45,10 +66,15 @@ services:
       dockerfile: Dockerfile
       
   socks:
+    environment:
+      USER: $PROXY_USER
+      PASS: $PROXY_PASS
+      HTTPS_IP: $PROXY_IP
+      HTTPS_PORT: $PROXY_PORT
     env_file:
       - socks.env
+      - common.env
     depends_on:
-      - vpn
       - firewall
     restart: always
     network_mode: service:firewall
@@ -58,6 +84,8 @@ services:
       dockerfile: Dockerfile
   
   app:
+    env_file:
+      - common.env
     depends_on:
       - socks
     restart: always
