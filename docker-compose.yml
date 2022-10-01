@@ -66,14 +66,14 @@ services:
       dockerfile: Dockerfile
       
   socks:
-    environment:
-      USER: $PROXY_USER
-      PASS: $PROXY_PASS
-      HTTPS_IP: $PROXY_IP
-      HTTPS_PORT: $PROXY_PORT
     env_file:
       - socks.env
       - common.env
+    environment:
+      USER: ${PROXY_USER}
+      PASS: ${PROXY_PASS}
+      HTTPS_IP: ${PROXY_IP}
+      HTTPS_PORT: ${PROXY_PORT}
     depends_on:
       - firewall
     restart: always
