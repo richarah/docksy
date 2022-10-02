@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 
 # Must have BuildKit enabled
 # COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
@@ -10,37 +10,11 @@ networks:
 
 services:
 
-  vpn:
-    image: protonvpn-docker
-    restart: always
-    environment:
-      env_file:
-      - vpn.env
-      # Credentials
-      PROTONVPN_USERNAME: ${PROTONVPN_USERNAME}
-      PROTONVPN_PASSWORD: ${PROTONVPN_PASSWORD}
-      # Override these where applicable
-      PROTONVPN_SERVER: ${PROTONVPN_SERVER:-RANDOM}
-      PROTONVPN_TIER: ${PROTONVPN_TIER:-0}
-    networks:
-      - internet
-      - intranet
-    cap_add:
-      - net_admin
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    # Expose pyload container's port here!
-    # expose:
-    #  - 8000
-    build:
-      context: protonvpn-docker
-      dockerfile: Dockerfile
-  
+  i2p:
+    image: 
+    
+    
   firewall:
-    env_file:
-      - firewall.env
-    depends_on:
-      - vpn
     restart: always
     # This capibility is needed to add firewall rules.
     cap_add:
@@ -64,15 +38,9 @@ services:
       dockerfile: Dockerfile
       
   socks:
-    environment:
-      env_file:
-      - socks.env
-      USER: ${PROXY_USER}
-      PASS: ${PROXY_PASS}
-      HTTPS_IP: ${PROXY_IP}
-      HTTPS_PORT: ${PROXY_PORT}
     depends_on:
       - firewall
+      - i2p
     restart: always
     network_mode: service:firewall
     image: socks-over-https
@@ -81,8 +49,6 @@ services:
       dockerfile: Dockerfile
   
   app:
-    env_file:
-      - app.env
     depends_on:
       - socks
     restart: always

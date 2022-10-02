@@ -1,6 +1,3 @@
-[submodule "protonvpn-docker"]
-	path = protonvpn-docker
-	url = https://github.com/richarah/protonvpn-docker.git
 [submodule "socks-over-https"]
 	path = socks-over-https
 	url = https://github.com/richarah/socks-over-https.git
