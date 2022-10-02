@@ -4,9 +4,13 @@ version: "2"
 # COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
 services:
-  proxy:
+  socks:
     network_mode: host
-    image: 
+    restart: always
+    image: socks-over-https
+    build:
+      context: socks-over-https
+      dockerfile: Dockerfile
   app:
     depends_on:
       - socks
