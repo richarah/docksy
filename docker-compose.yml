@@ -4,15 +4,24 @@ version: "2"
 # COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
 services:
-  socks:
+  redsocks:
     network_mode: host
+    restart: always
+    image: redsocks
+    build:
+      context: redsocks
+      dockerfile: Dockerfile
+  socks:
+    network_mode: service:redsocks
     restart: always
     image: socks-over-https
     build:
       context: socks-over-https
       dockerfile: Dockerfile
   app:
+    network_mode: service:redsocks
     depends_on:
+      - redsocks
       - socks
     restart: always
     image: ubuntu:latest
