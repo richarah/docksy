@@ -1,6 +1,3 @@
 [submodule "socks-over-https"]
 	path = socks-over-https
 	url = https://github.com/richarah/socks-over-https.git
-[submodule "docker-firewall"]
-	path = docker-firewall
-	url = https://github.com/richarah/docker-firewall.git
