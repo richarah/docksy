@@ -4,25 +4,20 @@ version: "2"
 # COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
 services:
-  redsocks:
-    network_mode: host
-    restart: always
-    image: redsocks
-    build:
-      context: redsocks
-      dockerfile: Dockerfile
   socks:
-    network_mode: service:redsocks
-    restart: always
+    network_mode: host
+    # restart: unless-stopped
     image: socks-over-https
+    environment:
+      - HTTPS_IP=$HTTPS_IP
+      - HTTPS_PORT=$HTTPS_PORT
+      - PROXY_USER=$PROXY_USER
+      - PROXY_PASS=$PROXY_PASS
     build:
       context: socks-over-https
       dockerfile: Dockerfile
   app:
-    network_mode: service:redsocks
-    depends_on:
-      - redsocks
-      - socks
-    restart: always
+    network_mode: host
+    # restart: unless-stopped
     image: ubuntu:latest
     
