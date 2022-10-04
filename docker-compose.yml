@@ -19,6 +19,13 @@ services:
     restart: unless-stopped
     ports:
       - 7777:7777
+    environment:
+      - SOCKS_IP=$SOCKS_IP
+      - SOCKS_PORT=$SOCKS_PORT
+      - HTTPS_IP=$HTTPS_IP
+      - HTTPS_PORT=$HTTPS_PORT
+      - PROXY_USER=$PROXY_USER
+      - PROXY_PASS=$PROXY_PASS
     build:
       context: socks-over-https
       dockerfile: Dockerfile
