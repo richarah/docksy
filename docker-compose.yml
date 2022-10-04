@@ -15,10 +15,9 @@ services:
       network: host
     entrypoint: "/usr/local/bin/redsocks.sh 127.0.0.1 7777"
   socks-over-https:
+    network_mode: host
     image: socks-over-https
     restart: unless-stopped
-    ports:
-      - 7777:7777
     environment:
       - SOCKS_IP=$SOCKS_IP
       - SOCKS_PORT=$SOCKS_PORT
