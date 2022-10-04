@@ -12,6 +12,7 @@ services:
     build:
       context: redsocks
       dockerfile: Dockerfile
+      network: host
     entrypoint: "/usr/local/bin/redsocks.sh 127.0.0.1 7777"
   socks-over-https:
     image: socks-over-https
@@ -21,3 +22,4 @@ services:
     build:
       context: socks-over-https
       dockerfile: Dockerfile
+      network: host
