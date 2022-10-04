@@ -14,6 +14,11 @@ services:
       dockerfile: Dockerfile
     entrypoint: "/usr/local/bin/redsocks.sh 127.0.0.1 7777"
   socksifier:
+    environment:
+      - HTTPS_IP=$HTTPS_IP
+      - HTTPS_PORT=$HTTPS_PORT
+      - PROXY_USER=$PROXY_USER
+      - PROXY_PASS=$PROXY_PASS
     image: socks-over-https
     restart: unless-stopped
     network_mode: host
