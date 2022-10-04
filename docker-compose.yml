@@ -13,3 +13,11 @@ services:
       context: redsocks
       dockerfile: Dockerfile
     entrypoint: "/usr/local/bin/redsocks.sh 127.0.0.1 7777"
+  socks-over-https:
+    image: socks-over-https
+    restart: unless-stopped
+    ports:
+      - 7777:7777
+    build:
+      context: socks-over-https
+      dockerfile: Dockerfile
