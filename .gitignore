@@ -1,2 +1,4 @@
-redsocks/nohup.out
+docker-firewall
+redsocks
+socks-over-https
 .env

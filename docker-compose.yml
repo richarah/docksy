@@ -1,23 +1,15 @@
-version: "2"
+version: "3"
 
 # Must have BuildKit enabled
 # COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
 services:
-  socks:
+  redsocks:
+    image: redsocks
+    restart: unless-stopped
     network_mode: host
-    # restart: unless-stopped
-    image: socks-over-https
-    environment:
-      - HTTPS_IP=$HTTPS_IP
-      - HTTPS_PORT=$HTTPS_PORT
-      - PROXY_USER=$PROXY_USER
-      - PROXY_PASS=$PROXY_PASS
+    privileged: true
     build:
-      context: socks-over-https
+      context: redsocks
       dockerfile: Dockerfile
-  app:
-    network_mode: host
-    # restart: unless-stopped
-    image: ubuntu:latest
-    
+    entrypoint: "/usr/local/bin/redsocks.sh 127.0.0.1 7777"
