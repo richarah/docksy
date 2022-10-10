@@ -8,8 +8,7 @@ services:
     image: redsocks2
     restart: unless-stopped
     network_mode: host
-    cap_add:
-      - NET_ADMIN
+    privileged: true
     build:
       context: redsocks2
       dockerfile: Dockerfile
