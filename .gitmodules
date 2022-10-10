@@ -1,6 +1,3 @@
-[submodule "redsocks"]
-	path = redsocks
-	url = https://github.com/richarah/redsocks.git
 [submodule "socks-over-https"]
 	path = socks-over-https
 	url = https://github.com/richarah/socks-over-https
