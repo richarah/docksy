@@ -1,4 +1,4 @@
-docker-firewall
-redsocks
-socks-over-https
+docker-firewall/*
+redsocks2/*
+socks-over-https/*
 .env

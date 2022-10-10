@@ -4,3 +4,6 @@
 [submodule "docker-firewall"]
 	path = docker-firewall
 	url = https://github.com/richarah/docker-firewall
+[submodule "redsocks2"]
+	path = redsocks2
+	url = https://github.com/richarah/redsocks2.git
