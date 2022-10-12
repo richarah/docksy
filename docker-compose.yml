@@ -4,17 +4,30 @@ version: "3"
 # COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build
 
 services:
-  rs2:
-    image: redsocks2
+  redsocks:
+    image: redsocks
     restart: unless-stopped
     network_mode: host
-    cap_add:
-      - NET_ADMIN
+    privileged: true
     build:
-      context: redsocks2
+      context: redsocks
+      dockerfile: Dockerfile
+      network: host
+  redudp:
+    depends_on:
+      - redsocks
+    image: redudp
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    build:
+      context: redudp
       dockerfile: Dockerfile
       network: host
   soh:
+    depends_on:
+      - redsocks
+      - redudp
     network_mode: host
     image: socks-over-https
     restart: unless-stopped
